@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { labelsAndInputs } from '../../constants/Constants';
 import DamageCalc from './DamageCalc/DamageCalc';
 
-function Content({ labelsAndInputs }) {
+function Content() {
   const [ShowResult, SetShowResult] = useState(false);
   const [form, setForm] = useState({});
-
   function inputHandler(event) {
     if (event.target.name === 'damage') {
       if (/^[\sdD0-9+-]*$/.test(event.target.value)) {
