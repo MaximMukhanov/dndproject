@@ -9,7 +9,9 @@ import React, { useEffect, useState } from 'react';
   const [damagePerRound, setDamagePerRound] = useState('');
   const [criticalDamage, setCriticalDamage] = useState('');
   const damageArray = damageInput.split('+');
-
+  function roll(){
+   
+  }
   function calculateDamage() {
     let averageDamage = 0;
     let averageCriticalDamage = 0;
@@ -66,6 +68,10 @@ import React, { useEffect, useState } from 'react';
       <p>
         {`Max Crit Damage: ${criticalDamage}`}
       </p>
+      <div>
+        <button onClick={console.log(damageArray)}>Roll</button>
+        hi
+        </div>
     </div>
   );
 }

@@ -179,7 +179,7 @@ background-color: #b340ff63;
 }
 .button-gradient{
   background-image: radial-gradient(#cfc5c565, #5555557e);
-  text-align: center;
+  
 }
 
 .button-gradien:hover {
@@ -190,4 +190,9 @@ background-color: #b340ff63;
 
 .completed-task-background{
   background-image: radial-gradient(transparent,#1eb760);
+}
+.inputWidth{
+  min-width:10rem;
+  text-align: left;
+  border: false;
 }

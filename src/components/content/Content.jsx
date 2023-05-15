@@ -1,70 +1,116 @@
-import React, { useState } from 'react';
-import { labelsAndInputs } from '../../constants/Constants';
-import DamageCalc from './DamageCalc/DamageCalc';
+import React, { useState } from "react";
+import { labels, inputs } from "../../constants/Constants";
+import DamageCalc from "./DamageCalc/DamageCalc";
+import { Input, Radio, Space, Tooltip, Row } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { changeTypeOfAttack } from "../../store/Slices/typeOfAttackSlice";
 
 function Content() {
-  const [ShowResult, SetShowResult] = useState(false);
-  const [form, setForm] = useState({});
-  function inputHandler(event) {
-    if (event.target.name === 'damage') {
-      if (/^[\sdD0-9+-]*$/.test(event.target.value)) {
-        setForm({
-          ...form,
-          [event.target.name]: event.target.value,
-        });
-      }
-    } else if (/^[-+0-9]*$/.test(event.target.value)) {
-      setForm({
-        ...form,
-        [event.target.name]: event.target.value,
-      });
-    }
-  }
+  // const [form, setForm] = useState({});
+  const TypeOfAttack = useSelector((state) => state.typeOfAttack.value);
+  const dispatch = useDispatch();
+  // function inputHandler(event) {
+  //   if (event.target.name === "damage") {
+  //     if (/^[\sdD0-9+-]*$/.test(event.target.value)) {
+  //       setForm({
+  //         ...form,
+  //         [event.target.name]: event.target.value,
+  //       });
+  //     }
+  //   } else if (/^[-+0-9]*$/.test(event.target.value)) {
+  //     setForm({
+  //       ...form,
+  //       [event.target.name]: event.target.value,
+  //     });
+  //   }
+  // }
 
-  function inputHandlerRadio(event) {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.id,
-    });
-  }
+  // function inputHandlerRadio(event) {
+  //   setForm({
+  //     ...form,
+  //     [event.target.name]: event.target.id,
+  //   });
+  // }
   return (
     <>
       <div className="block ">
         <div className="block-row">
-          <div className="block-item">
-            {
-          labelsAndInputs.map((el) => (
-            <label key={el.label}>
-              <span className="label">{el.label}</span>
-              <span className="tooltip-container">
-                <input autoComplete="off" type="text" name={el.name} id={el.label} pattern={el.pattern} onChange={(event) => { inputHandler(event); }} />
-                <div className="tooltip-text">{el.tooltip}</div>
-              </span>
-            </label>
-          ))
-        }
-          </div>
-          <div className="block-item">
-            {
-            labelsAndInputs.map((el) => (el.input !== undefined ? (
-              <label key={el.input}>
-                <input type="radio" className="radio" name="advantage" defaultChecked={el.checked} id={el.input} onChange={(event) => { inputHandlerRadio(event); }} />
-                <span className="label-text">{el.input}</span>
+          {/* <div className="block-item">
+            {labels.map((label) => (
+              <label key={label.label}>
+                <span className="label">{label.label}</span>
+                <span className="tooltip-container">
+                  <input
+                    autoComplete="off"
+                    type="text"
+                    name={label.name}
+                    id={label.label}
+                    pattern={label.pattern}
+                    onChange={(event) => {
+                      inputHandler(event);
+                    }}
+                  />
+                  <div className="tooltip-text">{label.tooltip}</div>
+                </span>
               </label>
-            ) : null))
-          }
+            ))}
+          </div> */}
+
+          <Row justify="center">
+            <Space direction="vertical">
+              {labels.map((element) => {
+                return (
+                  <div className="inputWidth">
+                    <Tooltip
+                      trigger={["focus"]}
+                      title={element.tooltip}
+                      placement="top"
+                      key={element.name}
+                      placeholder="Borderless"
+                    >
+                      <Input
+                        addonBefore={
+                          <div className="inputWidth">{element.label}</div>
+                        }
+                        minLength={"200px"}
+                      ></Input>
+                    </Tooltip>
+                  </div>
+                );
+              })}
+            </Space>
+          </Row>
+
+          <div className="block-item">
+            {
+              <Radio.Group
+                onChange={(event) =>
+                  dispatch(changeTypeOfAttack(event.target.value))
+                }
+                value={TypeOfAttack}
+              >
+                <Space direction="vertical">
+                  {inputs.map((element) => {
+                    return (
+                      <Radio value={element.input} key={element.input}>
+                        {element.input}
+                      </Radio>
+                    );
+                  })}
+                </Space>
+              </Radio.Group>
+            }
           </div>
         </div>
       </div>
-      <DamageCalc
+      {/* <DamageCalc
         advantage={form.advantage}
         enemyAc={form.enemyAc}
         damageInput={form.damage}
         numberOfAttacks={form.numberOfAttacks}
         AttackModificator={form.AttackModificator}
-      />
-
+      /> */}
     </>
   );
 }
-export default Content
+export default Content;
