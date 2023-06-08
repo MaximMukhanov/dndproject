@@ -5,14 +5,18 @@ const initialState = {
   attackModificator: "",
   numberOfAttacks: "",
 };
-const AttackCharacteristicsSlice = createSlice({
+const attackCharacteristicsSlice = createSlice({
   name: "AttackCharacteristics",
   initialState,
   reducers: {
     changeAttackCharacteristics: (state, action) => {
-      state = { ...state, ...action.payload };
+      const { name, value } = action.payload;
+      if (name == "damageFormula") {
+        if (/^[0-9d+\- ]+$/.test(value)) state[name] = value;
+      } else if (/^[0-9d+\- ]*$/.test(value)) state[name] = value;
     },
   },
 });
-export const changeAttackCharacteristics = AttackCharacteristicsSlice.actions;
-export default AttackCharacteristicsSlice.reducer;
+export const { changeAttackCharacteristics } =
+  attackCharacteristicsSlice.actions;
+export default attackCharacteristicsSlice.reducer;

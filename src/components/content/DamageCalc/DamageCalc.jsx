@@ -1,78 +1,66 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
- function DamageCalc({
-  advantage = '', enemyAc = '', damageInput = '', numberOfAttacks = '', AttackModificator = '',
-}) {
-  const [chanceToHit, setChanceToHit] = useState('');
-  const [damagePerRound, setDamagePerRound] = useState('');
-  const [criticalDamage, setCriticalDamage] = useState('');
-  const damageArray = damageInput.split('+');
-  function roll(){
-   
-  }
-  function calculateDamage() {
-    let averageDamage = 0;
-    let averageCriticalDamage = 0;
-    let maxCriticalDamage = 0;
-    for (let index = 0; index < damageArray.length; index += 1) {
-      if (damageArray[index].includes('d')) {
-        const a = damageArray[index].split('d');
-        averageDamage += a[0] * (a[1] / 2 + 0.5);
-        maxCriticalDamage += a[0] * a[1] * 2;
-        averageCriticalDamage += a[0] * a[1] * 1.6;
-      } else {
-        averageDamage += +damageArray[index];
-        averageCriticalDamage += +damageArray[index];
-        maxCriticalDamage += +damageArray[index];
+function DamageCalc() {
+  const typeOfAttack = useSelector((state) => state.typeOfAttack.value);
+  const attackModificator = useSelector(
+    (state) => state.attackCharacteristics.attackModificator
+  );
+  const damageFormula = useSelector(
+    (state) => state.attackCharacteristics.damageFormula
+  );
+  const enemyAc = useSelector((state) => state.attackCharacteristics.enemyAc);
+  const numberOfAttacks = useSelector(
+    (state) => state.attackCharacteristics.numberOfAttacks
+  );
+  let damagePerRound = "";
+  let criticalDamage = "";
+  let chanceToHit = "";
+  if (enemyAc && attackModificator) {
+    chanceToHit = (attackModificator - enemyAc + 21) * 5;
+    if (chanceToHit > 95) chanceToHit = 95;
+    if (chanceToHit < 5) chanceToHit = 5;
+    console.log(typeOfAttack);
+    if (typeOfAttack === "Advantage")
+      chanceToHit = (1 - (1 - chanceToHit / 100) ** 2) * 100;
+    if (typeOfAttack === "Disadvantage")
+      chanceToHit = (chanceToHit / 100) ** 2 * 100;
+    chanceToHit = chanceToHit.toFixed(2) - 0;
+
+    if (damageFormula !== "") {
+      const damageArray = damageFormula.split("+");
+      let averageDamage = 0;
+      let averageCriticalDamage = 0;
+      let maxCriticalDamage = 0;
+      for (let index = 0; index < damageArray.length; index += 1) {
+        if (damageArray[index].includes("d")) {
+          const a = damageArray[index].split("d");
+          averageDamage += a[0] * (a[1] / 2 + 0.5);
+          maxCriticalDamage += a[0] * a[1] * 2;
+          averageCriticalDamage += a[0] * a[1] * 1.6;
+        } else {
+          averageDamage += +damageArray[index];
+          averageCriticalDamage += +damageArray[index];
+          maxCriticalDamage += +damageArray[index];
+        }
       }
+      maxCriticalDamage = maxCriticalDamage.toFixed(1);
+      averageDamage = averageDamage.toFixed(1);
+      averageCriticalDamage = averageCriticalDamage.toFixed(1);
+      damagePerRound = (averageDamage * chanceToHit * numberOfAttacks) / 100;
+      damagePerRound = damagePerRound.toFixed(1);
+      criticalDamage = `${averageCriticalDamage} — ${maxCriticalDamage}`;
     }
-    maxCriticalDamage = maxCriticalDamage.toFixed(1);
-    averageDamage = averageDamage.toFixed(1);
-    averageCriticalDamage = averageCriticalDamage.toFixed(1);
-    setDamagePerRound((averageDamage * chanceToHit * numberOfAttacks) / 100);
-    setCriticalDamage(`${averageCriticalDamage} — ${maxCriticalDamage}`);
+    chanceToHit += "%";
   }
-  function calculateChanceToHit() {
-    let hitChance = (AttackModificator - enemyAc + 21) * 5;
-    if (hitChance > 95)hitChance = 95;
-    if (hitChance < 5)hitChance = 5;
-    if (advantage === 'Disadvantage') {
-      hitChance = ((hitChance / 100) ** 2) * 100;
-    }
-    if (advantage === 'Advantage') {
-      hitChance = (1 - (1 - hitChance / 100) ** 2) * 100;
-    }
-    setChanceToHit(hitChance.toFixed(1));
-  }
-
-  useEffect(() => {
-    if (!(enemyAc === '' || AttackModificator === '')) { calculateChanceToHit(); }
-  }, [enemyAc, AttackModificator, advantage]);
-
-  useEffect(() => {
-    if (!(damageInput === '' || numberOfAttacks === '' || chanceToHit === '')) { calculateDamage(); }
-  }, [damageInput, numberOfAttacks, chanceToHit]);
-
   return (
     <div className="result">
       <h2>Result</h2>
       <p />
-      <p>
-        { `Chance to hit: ${chanceToHit}%`}
-      </p>
-      <p>
-        {`Average damage per turn: ${damagePerRound}`}
-      </p>
-      <p>
-        {`Max Crit Damage: ${criticalDamage}`}
-      </p>
-      <div>
-        <button onClick={console.log(damageArray)}>Roll</button>
-        hi
-        </div>
+      <p>{`Chance to hit: ${chanceToHit}`}</p>
+      <p>{`Average damage per turn: ${damagePerRound}`}</p>
+      <p>{`Max Crit Damage: ${criticalDamage}`}</p>
     </div>
   );
 }
-export default DamageCalc
+export default DamageCalc;
