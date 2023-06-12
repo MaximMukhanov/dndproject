@@ -12,8 +12,9 @@ const attackCharacteristicsSlice = createSlice({
     changeAttackCharacteristics: (state, action) => {
       const { name, value } = action.payload;
       if (name == "damageFormula") {
-        if (/^[0-9d+\- ]+$/.test(value)) state[name] = value;
-      } else if (/^[0-9d+\- ]*$/.test(value)) state[name] = value;
+        if (/^(?:[0-9d+ ]+)?$/.test(value) && !value.includes("dd"))
+          state[name] = value;
+      } else if (/^(?:\d+)?$/.test(value)) state[name] = value;
     },
   },
 });

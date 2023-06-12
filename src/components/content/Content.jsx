@@ -8,7 +8,9 @@ import { changeAttackCharacteristics } from "../../store/Slices/attackCharacteri
 
 function Content() {
   const typeOfAttack = useSelector((state) => state.typeOfAttack.value);
-  const test = useSelector((state) => state.attackCharacteristics);
+  const attackCharacteristics = useSelector(
+    (state) => state.attackCharacteristics
+  );
   const dispatch = useDispatch();
   return (
     <>
@@ -25,7 +27,7 @@ function Content() {
                     key={element.name}
                   >
                     <Input
-                      value={test[element.name]}
+                      value={attackCharacteristics[element.name]}
                       name={element.name}
                       onChange={(event) => {
                         dispatch(
@@ -67,13 +69,6 @@ function Content() {
           </div>
         </div>
       </div>
-      <Button
-        onClick={() => {
-          console.log(test);
-        }}
-      >
-        {typeOfAttack}
-      </Button>
       <DamageCalc />
     </>
   );
